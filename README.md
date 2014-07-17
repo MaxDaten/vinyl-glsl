@@ -1,5 +1,6 @@
 vinyl-glsl
 ==========
+[![Stories in Ready](https://badge.waffle.io/MaxDaten/vinyl-glsl.png?label=ready&title=Ready)](http://waffle.io/MaxDaten/vinyl-glsl)
 
 quasi-quotation for type-safe GLSL
 
