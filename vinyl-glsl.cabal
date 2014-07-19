@@ -15,6 +15,7 @@ build-type:          Simple
 extra-source-files:  README.md
 cabal-version:       >=1.10
 
+
 library
     exposed-modules:    GLSL
                         GLSL.QuasiQuoter
@@ -62,3 +63,7 @@ test-suite GLSLQuasi
                  , vinyl-glsl
                  , hspec
                  , QuickCheck >= 2.7.5
+
+source-repository head
+  type: git
+  location: https://github.com:maxdaten/vinyl-glsl.git
