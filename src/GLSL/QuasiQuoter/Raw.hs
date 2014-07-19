@@ -8,11 +8,11 @@ import Language.Haskell.TH.Quote
 
 
 import Instances.TH.Lift ()
-import qualified Data.ByteString.Lazy.Char8 as BL
+import qualified Data.ByteString.Char8 as BS
 
 
 
-data GLShaderRaw = GLShaderRaw { unRaw :: BL.ByteString }
+data GLShaderRaw = GLShaderRaw { unRaw :: BS.ByteString }
     deriving ( Show, Eq, Ord )
 
 
@@ -27,4 +27,4 @@ glslRawFile fp = do
 
 
 glslRawFromString :: String -> Q Exp
-glslRawFromString s = [| GLShaderRaw (BL.pack s) |]
+glslRawFromString s = [| GLShaderRaw (BS.pack s) |]
