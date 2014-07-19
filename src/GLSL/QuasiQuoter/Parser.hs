@@ -3,7 +3,6 @@
 -- https://github.com/elm-lang/Elm/blob/master/compiler/Parse/Helpers.hs
 module GLSL.QuasiQuoter.Parser where
 
-import ClassyPrelude
 
 import Language.Haskell.TH
 import Language.Haskell.TH.Syntax
@@ -22,7 +21,7 @@ glsl = QuasiQuoter { quoteExp = glslFromString }
 
 glslFile :: FilePath -> Q Exp
 glslFile fp = do
-    qAddDependentFile (fpToString fp)
+    qAddDependentFile fp
     glslFromString =<< qRunIO (readFile fp)
 
 

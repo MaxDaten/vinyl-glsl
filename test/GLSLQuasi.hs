@@ -1,9 +1,10 @@
 module Main where
 
-import ClassyPrelude
 import Test.Hspec
 
 import qualified GLSL.QuasiQuoter.Raw as Raw
+import qualified Data.ByteString.Lazy as BL
+
 
 simpleGLSLVert :: Raw.GLShaderRaw
 simpleGLSLVert = [Raw.glslRaw|
@@ -33,4 +34,4 @@ main = hspec $ do
     describe "simple bytestring QQ" $ do
         it "parses a file and in-code qq" $
             -- append nl because of inline QQ above
-            ("\n" ++ Raw.unRaw $(Raw.glslRawFile "test/res/simple.vert")) `shouldBe` Raw.unRaw simpleGLSLVert
+            ("\n" `BL.append` Raw.unRaw $(Raw.glslRawFile "test/res/simple.vert")) `shouldBe` Raw.unRaw simpleGLSLVert

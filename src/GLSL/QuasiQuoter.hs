@@ -1,8 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 module GLSL.QuasiQuoter where
 
-import ClassyPrelude
-
 import Language.Haskell.TH
 import Language.Haskell.TH.Syntax
 import Language.Haskell.TH.Quote
@@ -18,7 +16,7 @@ glslBS = QuasiQuoter { quoteExp = glslBSFromString }
 
 glslFileBS :: FilePath -> Q Exp
 glslFileBS fp = do
-    qAddDependentFile (fpToString fp)
+    qAddDependentFile fp
     glslBSFromString =<< qRunIO (readFile fp)
 
 
