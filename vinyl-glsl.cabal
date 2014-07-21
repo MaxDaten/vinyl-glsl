@@ -18,7 +18,6 @@ cabal-version:       >=1.10
 
 library
     exposed-modules:    GLSL
-                        GLSL.QuasiQuoter
                         GLSL.QuasiQuoter.Raw
                         GLSL.QuasiQuoter.Parser
     -- other-modules:       
