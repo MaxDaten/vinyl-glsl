@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                vinyl-glsl
-version:             0.1.0.0
+version:             0.1.1.0
 synopsis:            quasi-quotation for type-safe GLSL
 -- description:         
 license:             MIT
@@ -41,6 +41,26 @@ library
                         , th-lift-instances >= 0.1.3    &&  < 0.1.4
 
 
+test-suite example
+    type:              exitcode-stdio-1.0
+    hs-source-dirs:    test
+    main-is:           Example.hs
+    
+    ghc-options:       -Wall
+    
+    default-language:  Haskell2010
+    default-extensions: OverloadedStrings
+                        QuasiQuotes
+                        TemplateHaskell
+
+
+    build-depends: base
+                 , vinyl-glsl == 0.1.1.0
+                 , doctest
+                 , bytestring
+
+                 , QuickCheck >= 2.7.5
+
 test-suite GLSLQuasi
     type:              exitcode-stdio-1.0
     hs-source-dirs:    test
@@ -55,7 +75,7 @@ test-suite GLSLQuasi
 
 
     build-depends: base
-                 , vinyl-glsl
+                 , vinyl-glsl == 0.1.1.0
                  , bytestring
 
                  , hspec
