@@ -1,5 +1,8 @@
+{-# OPTIONS_GHC -fno-warn-unused-binds #-}
 {-# LANGUAGE TemplateHaskell #-}
+
 import Prelude
+
 import GLSL
 
 import Test.DocTest

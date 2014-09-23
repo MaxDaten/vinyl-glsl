@@ -13,6 +13,7 @@ import Instances.TH.Lift ()
 
 import GLSL.IncludeParser
 import Text.Parsec
+import Text.Parsec.String
 
 import System.FilePath
 
@@ -57,6 +58,16 @@ glslRawFile fp = glslRawFromString =<< loadFile fp
         let filePath = basePath </> relativeFile
         loadFile filePath
 
-
+-- | lineCleanup to remove all white spaces
 glslRawFromString :: String -> Q Exp
-glslRawFromString bs = [| GLShaderRaw bs |]
+glslRawFromString bs = 
+    case (parse lineCleanup "" bs) of
+        Left err    -> error $ "error during line cleanup" ++ show err
+        Right str   -> [| GLShaderRaw str |]
+
+
+lineCleanup :: Parser String
+lineCleanup = do
+    optional (many newline)
+    ls <- sepEndBy1 (skipMany blank >> many (noneOf "\n") ) (many1 newline)
+    return $ unlines ls
