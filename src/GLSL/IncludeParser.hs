@@ -1,14 +1,13 @@
 module GLSL.IncludeParser where
 
+import Prelude
 
 import Text.Parsec
-import Text.Parsec.ByteString
-import Data.ByteString
-import qualified Data.ByteString.Char8 as BS
+import Text.Parsec.String
 
 
 data GLSLWithExternals =
-      GLSLLine ByteString
+      GLSLLine String
     | GLSLExternal FilePath
     deriving ( Show, Eq, Ord )
 
@@ -33,7 +32,7 @@ include = fmap GLSLExternal $ lexeme $
 
 -- | parses a code line (inkl. comments) but drops empty lines
 line :: Parser GLSLWithExternals
-line = fmap (GLSLLine . BS.pack) $ lexeme $ manyTill anyChar ((newline >> return ()) <|> eof)
+line = fmap GLSLLine $ lexeme $ manyTill anyChar ((newline >> return ()) <|> eof)
 
 includeParser :: IncludeParser
 includeParser = manyTill (try include <|> line) eof

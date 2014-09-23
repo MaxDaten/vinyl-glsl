@@ -4,11 +4,10 @@ module GLSL
     , module GLSL
     ) where
 
+import Prelude
 
 import          GLSL.QuasiQuoter.Parser         as Parser
 import          GLSL.QuasiQuoter.Raw            as Raw
-
-import          Data.ByteString
 
 import          Language.Haskell.TH.Syntax
 import          Instances.TH.Lift ()
@@ -25,7 +24,7 @@ data FragmentShader = FragmentShader
 data ShaderSource shTy = ShaderSource
     { shaderName    :: String
     , shaderType    :: shTy
-    , shaderRaw     :: ByteString
+    , shaderRaw     :: String
     } deriving (Show, Ord, Eq)
 
 

@@ -7,7 +7,6 @@ import Test.Hspec
 import qualified GLSL.QuasiQuoter.Raw   as Raw
 import qualified GLSL.IncludeParser     as Incl
 import qualified Text.Parsec            as P
-import qualified Data.ByteString        as BS
 import           Control.Monad (when)
 import           Data.Either
 import           Data.Semigroup
@@ -91,7 +90,7 @@ main = hspec $ do
     describe "simple bytestring QQ" $ do
         it "parses a file and in-code qq" $
             -- append nl because of inline QQ above
-            ("\n" `BS.append` Raw.unRaw $(Raw.glslRawFile "test/res/simple.vert")) `shouldBe` Raw.unRaw simpleGLSLVert
+            ("\n" ++ Raw.unRaw $(Raw.glslRawFile "test/res/simple.vert")) `shouldBe` Raw.unRaw simpleGLSLVert
 
 
 

@@ -3,6 +3,7 @@
 -- https://github.com/elm-lang/Elm/blob/master/compiler/Parse/Helpers.hs
 module GLSL.QuasiQuoter.Parser where
 
+import Prelude
 
 import Language.Haskell.TH
 import Language.Haskell.TH.Syntax

@@ -2,6 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module GLSL.QuasiQuoter.Raw where
 
+import Prelude
 
 import Language.Haskell.TH
 import Language.Haskell.TH.Syntax
@@ -10,23 +11,18 @@ import Language.Haskell.TH.Quote
 
 import Instances.TH.Lift ()
 
-import           Data.ByteString                    ( ByteString )
-import qualified Data.ByteString       as BS hiding ( pack )
-import qualified Data.ByteString.Char8 as BS        ( pack )
-import Data.List.NonEmpty( NonEmpty( (:|) ) )
 import GLSL.IncludeParser
 import Text.Parsec
 
-import System.Directory
 import System.FilePath
 
 import Data.Semigroup
 
-data GLShaderRaw = GLShaderRaw { unRaw :: BS.ByteString }
+data GLShaderRaw = GLShaderRaw { unRaw :: String }
     deriving ( Show, Eq, Ord )
 
 instance Semigroup GLShaderRaw where
-    (GLShaderRaw a) <> (GLShaderRaw b) = GLShaderRaw $ a <> "\n" <> b
+    (GLShaderRaw a) <> (GLShaderRaw b) = GLShaderRaw $ a ++ "\n" ++ b
 
 emptyShaderRaw :: GLShaderRaw
 emptyShaderRaw = GLShaderRaw ""
@@ -36,37 +32,31 @@ glslRaw = QuasiQuoter { quoteExp = glslRawFromString }
 
 
 glslRawFile :: FilePath -> Q Exp
-glslRawFile fp = glslRawFromByteString . unRaw =<< loadFile fp
+glslRawFile fp = glslRawFromString =<< loadFile fp
     
     where
     
-    loadFile :: FilePath -> Q GLShaderRaw
+    loadFile :: FilePath -> Q String
     loadFile filePath = do 
         qAddDependentFile filePath
-        contentBS <- fmap BS.pack $ qRunIO $ readFile filePath
-        processIncludes filePath contentBS
+        content <- qRunIO $ readFile filePath
+        processIncludes filePath content
 
 
     -- | just as simple as possible, no duplicate or include cycle detection
     -- seeks '#include "filename"' and fuse it directly in to the String
-    processIncludes :: FilePath -> ByteString -> Q GLShaderRaw
+    processIncludes :: FilePath -> String -> Q String
     processIncludes filePath bs = 
         case parse includeParser filePath bs of
             Left err -> error $ "error while parsing includes" ++ show err
-            Right linesWithExternals -> do
-                withExternals <- mapM ( unpackExternals (dropFileName filePath) ) linesWithExternals
-                return $ sconcat (emptyShaderRaw :| withExternals) 
+            Right linesWithExternals -> fmap (unlines) $ mapM (unpackExternals (dropFileName filePath)) linesWithExternals
 
-    unpackExternals :: FilePath -> GLSLWithExternals -> Q GLShaderRaw
-    unpackExternals _ (GLSLLine bs)              = return $ GLShaderRaw bs 
+    unpackExternals :: FilePath -> GLSLWithExternals -> Q String
+    unpackExternals _ (GLSLLine bs) = return bs
     unpackExternals basePath (GLSLExternal relativeFile) = do
-        filePath <- qRunIO $ canonicalizePath $ basePath </> relativeFile
+        let filePath = basePath </> relativeFile
         loadFile filePath
 
 
 glslRawFromString :: String -> Q Exp
-glslRawFromString = glslRawFromByteString . BS.pack
-
-
-glslRawFromByteString :: ByteString -> Q Exp
-glslRawFromByteString bs = [| GLShaderRaw bs |]
+glslRawFromString bs = [| GLShaderRaw bs |]
